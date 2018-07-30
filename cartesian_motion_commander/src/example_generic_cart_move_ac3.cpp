@@ -54,7 +54,7 @@ int main(int argc, char** argv) {
     R_gripper.col(1) = t_des;
     R_gripper.col(2) = b_des;
     
-    O_des<<0.3,-0.1,0.0;
+    O_des<<0.5,0.0,0.0;
     Eigen::Affine3d tool_affine;
     tool_affine.linear() = R_gripper;
     tool_affine.translation()= O_des;
@@ -96,10 +96,11 @@ int main(int argc, char** argv) {
     }  
 
 //MOVE TO PLACE THE TOY
-    tool_pose.pose.position.y+=0.2;
+    tool_pose.pose.position.y-=0.2;
     ROS_INFO("Confirmation of motion to place toy:");
     std::cout<<"enter 1 to approve motion to place toy: ";
     std::cin>>ans; 
+
     xformUtils.printPose(tool_pose);
     rtn_val=cart_motion_commander.plan_jspace_traj_current_to_tool_pose(nsteps,arrival_time,tool_pose);
     if (rtn_val == arm_motion_action::arm_interfaceResult::SUCCESS)  { 
@@ -115,6 +116,7 @@ int main(int argc, char** argv) {
     std::cout<<"enter 1 to approve vacuum gripper release upon arrival: ";
     std::cin>>ans; 
     xformUtils.printPose(tool_pose);
+
     rtn_val=cart_motion_commander.plan_jspace_traj_current_to_tool_pose(nsteps,arrival_time,tool_pose);
     if (rtn_val == arm_motion_action::arm_interfaceResult::SUCCESS)  { 
         ROS_INFO("successful plan; command execution of trajectory");
@@ -127,8 +129,8 @@ int main(int argc, char** argv) {
   
 
 //MOVE BACK TO PICK UP ANOTHER TOY
-    tool_pose.pose.position.y-=0.2;
-     ROS_INFO("Confirmation of motion to return to toy area: ");
+    tool_pose.pose.position.y+=0.2;
+    ROS_INFO("Confirmation of motion to return to toy area: ");
     std::cout<<"enter 1 to approve motion back to toy area: ";
     std::cin>>ans; 
     xformUtils.printPose(tool_pose);
